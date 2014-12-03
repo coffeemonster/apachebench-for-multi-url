@@ -612,7 +612,7 @@ static void ssl_proceed_handshake(struct connection *c)
 
                 ssl_info = malloc(128);
                 apr_snprintf(ssl_info, 128, "%s,%s,%d,%d",
-                             SSL_CIPHER_get_version(ci),
+                             SSL_get_version(c->ssl),
                              SSL_CIPHER_get_name(ci),
                              pk_bits, sk_bits);
             }
@@ -1922,8 +1922,22 @@ static void usage(const char *progname)
     fprintf(stderr, "    -h              Display usage information (this message)\n");
     fprintf(stderr, "    -L              Use URL list file name, eg. url.txt\n");
 #ifdef USE_SSL
+
+#ifndef OPENSSL_NO_SSL2
+#define SSL2_HELP_MSG "SSL2, "
+#else
+#define SSL2_HELP_MSG ""
+#endif
+
+#ifdef HAVE_TLSV1_X
+#define TLS1_X_HELP_MSG ", TLS1.1, TLS1.2"
+#else
+#define TLS1_X_HELP_MSG ""
+#endif
+
     fprintf(stderr, "    -Z ciphersuite  Specify SSL/TLS cipher suite (See openssl ciphers)\n");
     fprintf(stderr, "    -f protocol     Specify SSL/TLS protocol (SSL2, SSL3, TLS1, or ALL)\n");
+    fprintf(stderr, "                    (" SSL2_HELP_MSG "SSL3, TLS1" TLS1_X_HELP_MSG " or ALL)\n");
 #endif
     exit(EINVAL);
 }
@@ -2269,10 +2283,18 @@ int main(int argc, const char * const argv[])
             case 'f':
                 if (strncasecmp(optarg, "ALL", 3) == 0) {
                     meth = SSLv23_client_method();
+#ifndef OPENSSL_NO_SSL2
                 } else if (strncasecmp(optarg, "SSL2", 4) == 0) {
                     meth = SSLv2_client_method();
+#endif
                 } else if (strncasecmp(optarg, "SSL3", 4) == 0) {
                     meth = SSLv3_client_method();
+#ifdef HAVE_TLSV1_X
+                } else if (strncasecmp(optarg, "TLS1.1", 6) == 0) {
+                    meth = TLSv1_1_client_method();
+                } else if (strncasecmp(optarg, "TLS1.2", 6) == 0) {
+                    meth = TLSv1_2_client_method();
+#endif
                 } else if (strncasecmp(optarg, "TLS1", 4) == 0) {
                     meth = TLSv1_client_method();
                 }
