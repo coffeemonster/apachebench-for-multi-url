@@ -29,7 +29,9 @@ curl https://raw.githubusercontent.com/coffeemonster/apachebench-for-multi-url/m
 # Compile + Install
 ./configure --enable-ssl
 make
-sudo cp support/ab /usr/loca/bin/ab
+sudo cp support/ab /usr/local/bin/ab
+ab -V
+This is ApacheBench, Version 2.4.2 ...
 ```
 
 ### Example Usage
