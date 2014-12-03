@@ -90,6 +90,9 @@
    **     also confirm response of document length for each requests. 
    **     Contributed by Atsushi Ishii <atsushi@couger.co.jp>, December 4, 2010
    **
+   ** Version 2.4.2
+   **     enable https urls <https://github.com/coffeemonster>
+   **
    **/
 
 /* Note: this version string should start with \d+[\d\.]* and be a valid
@@ -101,7 +104,7 @@
  * ab - or to due to a change in the distribution it is compiled with
  * (such as an APR change in for example blocking).
  */
-#define AP_AB_BASEREVISION "2.4.1"
+#define AP_AB_BASEREVISION "2.4.2"
 
 /*
  * BUGS:
